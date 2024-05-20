@@ -1,22 +1,11 @@
 #include "get_next_line.h"
 #include <stdio.h>
 
-char	*get_next_line(int fd)
+static char	*read_file(int fd, char *line)
 {
 	char	*ptr;
-	char	*line;
-	char	*backup;
-	char	*str;
-	ssize_t		bytes;
-	int		i;
-	int		j;
-	int		length;
+	ssize_t	bytes;
 
-	i = 0;
-	j = 0;
-	if (fd < 0 || BUFFER_SIZE <= 0)
-		return (0);
-	line = ft_calloc(1, sizeof(char));
 	ptr = ft_calloc(BUFFER_SIZE + 1, sizeof(char));
 	if (!ptr)
 		return (NULL);
@@ -28,9 +17,20 @@ char	*get_next_line(int fd)
 		return (NULL);
 	}
 	line = ft_strjoin(line, ptr);
+	return (line);
+}
+
+static char	*extract_lines(char *line)
+{
+	char	*backup;
+	int	i;
+	int	j;
+
+	i = 0;
+	j = 0;
 	while (line[j] != '\n' && line[j] != '\0')
 		j++;
-	backup = ft_calloc(j + 1, sizeof(char));
+	backup = ft_calloc(j, sizeof(char));
 	if (!backup)
 		return (NULL);
 	i = 0;
@@ -39,17 +39,54 @@ char	*get_next_line(int fd)
 		backup[i] = line[i];
 		i++;
 	}
+	return (backup);
+}
+
+static char *other_lines(char *line)
+{
+	int	length;
+	int	i;
+	int	j;
+	char	*ptr;
+
+	i = 0;
 	length = ft_strlen(line);
-	str = ft_calloc(length + 1 - i, sizeof(char));
+	ptr = ft_calloc(length - i, sizeof(char));
 	i++;
 	j = 0;
 	while(line[i] != '\0')
 	{
-		str[j] = line[i];
+		ptr[j] = line[i];
 		i++;
 		j++;
 	}
-	return (str);
+	return (ptr);
+}
+
+char	*get_next_line(int fd)
+{
+	char	*ptr;
+	char	*line;
+	char	*backup;
+	char	*str;
+	ssize_t		bytes;
+	int		i;
+	int		j;
+	int		length;
+	char	*print;
+
+	i = 0;
+	j = 0;
+	if (fd < 0 || BUFFER_SIZE <= 0)
+		return (0);
+	line = ft_calloc(1, sizeof(char));
+	if (!ptr)
+		return (NULL);
+	line = read_file(fd, line);
+	backup = extract_lines(line);
+	str = other_lines(line);
+	print = ft_strjoin(line, str);
+	return (backup);
 }
 
 #include <stdio.h>
