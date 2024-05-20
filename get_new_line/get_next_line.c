@@ -1,80 +1,69 @@
 #include "get_next_line.h"
+#include <stdio.h>
 
-static char    *read_line(int fd, char *line)
+char	*get_next_line(int fd)
 {
-	char    *ptr;
-	ssize_t bytes;
+	char	*ptr;
+	char	*line;
+	char	*backup;
+	char	*str;
+	ssize_t		bytes;
+	int		i;
+	int		j;
+	int		length;
 
+	i = 0;
+	j = 0;
+	if (fd < 0 || BUFFER_SIZE <= 0)
+		return (0);
+	line = ft_calloc(1, sizeof(char));
 	ptr = ft_calloc(BUFFER_SIZE + 1, sizeof(char));
 	if (!ptr)
 		return (NULL);
-	while (*line != '\0')
+	
+	bytes = read(fd, ptr, BUFFER_SIZE);
+	if (bytes == -1)
 	{
-		bytes = read(fd, ptr, BUFFER_SIZE);
-		if (bytes == -1)
-		{
-			free(ptr);
-			return (NULL);
-		}
-		if (bytes == 0)
-		{
-			free(ptr);
-			return (0);
-		}
-		line = ft_strjoin(line, ptr);
-		free(ptr);
+		free (ptr);
+		return (NULL);
 	}
-	return (ptr);				
-}
-static char	*get_line(char *line)
-{
-	int	i;
-	char	*ptr;
-
+	line = ft_strjoin(line, ptr);
+	while (line[j] != '\n' && line[j] != '\0')
+		j++;
+	backup = ft_calloc(j + 1, sizeof(char));
+	if (!backup)
+		return (NULL);
 	i = 0;
-	while(line[i] != '\0' && line[i] != '\n')
+	while (line[i] != '\n' && line[i] != '\0')
+	{
+		backup[i] = line[i];
 		i++;
-	ptr = ft_calloc(i + 1, sizeof(char));
-	if (!ptr)
-		return (NULL);
-	ft_strlcpy(ptr, line, i);
-	if (line[i] == '\n')
-		ptr[i] = '\n';
-	return (ptr);
+	}
+	length = ft_strlen(line);
+	str = ft_calloc(length + 1 - i, sizeof(char));
+	i++;
+	j = 0;
+	while(line[i] != '\0')
+	{
+		str[j] = line[i];
+		i++;
+		j++;
+	}
+	return (str);
 }
-
-char    *get_next_line(int fd)
-{
-	static char     *line;
-	char	*one_line;
-
-	if (BUFFER_SIZE <= 0 || fd < 0)
-		return (NULL);
-	line = read_line(fd, line);
-	if (!line)
-		return (NULL);
-	one_line = get_line(line);
-
-	return (one_line);
-}
-
 
 #include <stdio.h>
 #include <fcntl.h>
+int	main(void)
+{
+	int	fd;
+	char	*print_line;
 
-int main() {
-	int fd = open("test.txt", O_RDONLY);
-	if (fd == -1) {
-		perror("Error opening file");
-		return 1;
-	}
-
-	char *line;
-	while ((line = get_next_line(fd))!= NULL) {
-		printf("%s", line);
-		free(line);
-	}
-
+	fd = open("test1.txt", O_RDONLY);
+	print_line = get_next_line(fd);
+	if (print_line != NULL)
+		printf("%s\n", print_line);
+	print_line = NULL;
 	close(fd);
-	return 0;
+	return (0);
 }

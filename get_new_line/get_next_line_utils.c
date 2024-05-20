@@ -63,20 +63,3 @@ char	*ft_strjoin(char const *s1, char const *s2)
 	ft_strcpy(ptr + ft_strlen(s1), s2);
 	return (ptr);
 }
-
-unsigned int	ft_strlcpy(char *dest, const char *src, unsigned int size)
-{
-	unsigned int	i;
-
-	i = 0;
-	if (size != 0)
-	{
-		while (src[i] != '\0' && i < size - 1)
-		{
-			dest[i] = src[i];
-			i++;
-		}
-		dest[i] = '\0';
-	}
-	return (ft_strlen(src));
-}
