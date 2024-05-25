@@ -15,13 +15,11 @@ static char *read_line(int fd, char *line)
     buffer = ft_calloc(BUFFER_SIZE + 1, sizeof(char));
     if (!buffer)
         return NULL;
-
     while (1)
     {
         bytes = read(fd, buffer, BUFFER_SIZE);
         if (bytes == -1)
         {
-        //    free(line);
             free(buffer);
             return NULL;
         }
