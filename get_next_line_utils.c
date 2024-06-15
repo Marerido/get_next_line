@@ -49,7 +49,7 @@ char	*ft_strcpy(char *dest, char const *src)
 	return (dest);
 }
 
-char	*ft_strjoin(char const *s1, char const *s2)
+char	*ft_strjoin(char *s1, const char *s2)
 {
 	char	*ptr;
 
@@ -61,6 +61,7 @@ char	*ft_strjoin(char const *s1, char const *s2)
 		return (NULL);
 	ft_strcpy(ptr, s1);
 	ft_strcpy(ptr + ft_strlen(s1), s2);
+//	free(s1);
 	return (ptr);
 }
 
@@ -98,7 +99,7 @@ char	*ft_strdup(char *src)
 	int		i;
 
 	i = 0;
-	place = (char *)malloc(sizeof(char) * ft_strlen(src) + 1);
+	place = (char *)malloc(sizeof(char) * (ft_strlen(src) + 1));
 	if (!place)
 		return (NULL);
 	while (src[i] != '\0')
@@ -107,5 +108,6 @@ char	*ft_strdup(char *src)
 		i++;
 	}
 	place[i] = '\0';
+//	free((char *)src);
 	return (place);
 }
