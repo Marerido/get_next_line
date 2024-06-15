@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   get_next_line_utils.c                              :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: tunglaub <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/06/15 17:43:08 by tunglaub          #+#    #+#             */
+/*   Updated: 2024/06/15 17:43:29 by tunglaub         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "get_next_line.h"
 
 size_t	ft_strlen(const char *str)
@@ -61,9 +73,18 @@ char	*ft_strjoin(char *s1, const char *s2)
 		return (NULL);
 	ft_strcpy(ptr, s1);
 	ft_strcpy(ptr + ft_strlen(s1), s2);
-//	free(s1);
-	return (ptr);
+	return (free(s1), ptr);
 }
+
+// char	**ft_strjoin_and_free(char *s1, char *s2)
+// {
+// 	char	*temp;
+
+// 	temp = ft_strjoin(s1, s2);
+// 	if (!s1)
+// 		free(s1);
+// 	free(temp);
+// }
 
 unsigned int	ft_strlcpy(char *dest, const char *src, unsigned int size)
 {
