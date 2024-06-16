@@ -1,21 +1,11 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   get_next_line.c                                    :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: tunglaub <marvin@42.fr>                    +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/06/15 17:24:02 by tunglaub          #+#    #+#             */
-/*   Updated: 2024/06/15 17:24:18 by tunglaub         ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
-
 #include "get_next_line.h"
+#include <stdio.h>
 
 static char	*read_line(int fd, char *line)
 {
 	char	*buffer;
 	ssize_t	bytes;
+	char	*temp;
 
 	if (!line)
 		line = ft_calloc(1, sizeof(char));
@@ -23,54 +13,68 @@ static char	*read_line(int fd, char *line)
 		return (NULL);
 	buffer = ft_calloc(BUFFER_SIZE + 1, sizeof(char));
 	if (!buffer)
-		return (free(line), NULL);
-	bytes = 1;
-	while (bytes)
+	{
+		free(line);
+		return (NULL);
+	}
+	while (1)
 	{
 		bytes = read(fd, buffer, BUFFER_SIZE);
 		if (bytes == -1)
-			return (free(line), free(buffer), NULL);
+		{
+			free(line);
+			free(buffer);
+			return (NULL);
+		}
+		if (bytes == 0)
+			break;
 		buffer[bytes] = '\0';
+		temp = line;
 		line = ft_strjoin(line, buffer);
+		free(temp);
 		if (!line)
-			return (free(buffer), NULL);
+		{
+			free(buffer);
+			return (NULL);
+		}
 		if (ft_strchr(buffer, '\n'))
-			break ;
+			break;
 	}
-	return (free(buffer), line);
+	free(buffer);
+	return (line);
 }
 
-static char	*get_line(char *line)
+static char *get_line(char *line)
 {
-	int		i;
-	char	*ptr;
+	int i;
+	char *ptr;
 
 	i = 0;
 	while (line[i] != '\0' && line[i] != '\n')
 		i++;
 	ptr = ft_calloc(i + 2, sizeof(char));
 	if (!ptr)
-		return (NULL);
+		return NULL;
 	ft_strlcpy(ptr, line, i + 1);
 	if (line[i] == '\n')
 		ptr[i] = '\n';
-	return (ptr);
+	return ptr;
 }
 
-char	*get_next_line(int fd)
+char *get_next_line(int fd)
 {
-	static char	*line;
-	char		*one_line;
-	char		*temp;
+	static char *line;
+	char *one_line;
+	char *temp;
 
 	if (BUFFER_SIZE <= 0 || fd < 0)
-		return (NULL);
+		return NULL;
 	line = read_line(fd, line);
 	if (!line || !*line)
 	{
 		free(line);
 		line = NULL;
-		return (NULL);
+		return NULL;
 	}
 	one_line = get_line(line);
 	temp = line;
@@ -81,8 +85,9 @@ char	*get_next_line(int fd)
 		free(line);
 		line = NULL;
 	}
-	return (one_line);
+	return one_line;
 }
+
 /*
 #include <stdio.h>
 #include <fcntl.h>
