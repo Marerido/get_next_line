@@ -22,69 +22,53 @@ size_t	ft_strlen(const char *str)
 	return (i);
 }
 
-void	ft_bzero(void *s, size_t n)
+void	*ft_calloc(size_t nitems, size_t size)
 {
-	size_t	i;
+	void	*mem;
 	char	*str;
+	size_t	total_size;
+	size_t	i;
 
-	str = s;
 	i = 0;
-	while (i < n)
+	total_size = nitems * size;
+	mem = malloc(total_size);
+	if (!mem)
+		return (NULL);
+	str = mem;
+	while (i < total_size)
 	{
 		str[i] = 0;
 		i++;
 	}
-}
-
-void	*ft_calloc(size_t nitems, size_t size)
-{
-	void	*mem;
-
-	mem = (void *)malloc(nitems * size);
-	if (!mem)
-		return (NULL);
-	ft_bzero(mem, (nitems * size));
 	return (mem);
-}
-
-char	*ft_strcpy(char *dest, char const *src)
-{
-	int	i;
-
-	i = 0;
-	while (src[i] != '\0')
-	{
-		dest[i] = src[i];
-		i++;
-	}
-	dest[i] = '\0';
-	return (dest);
 }
 
 char	*ft_strjoin(char *s1, const char *s2)
 {
 	char	*ptr;
+	size_t	i;
+	size_t	j;
 
 	if (!s1 || !s2)
 		return (NULL);
-	ptr = (char *)malloc(sizeof(char) 
-			* (ft_strlen(s1) + ft_strlen(s2) + 1));
+	ptr = (char *)malloc(sizeof(char) * (ft_strlen(s1) + ft_strlen(s2) + 1));
 	if (!ptr)
 		return (NULL);
-	ft_strcpy(ptr, s1);
-	ft_strcpy(ptr + ft_strlen(s1), s2);
+	i = 0;
+	while (s1[i] != '\0')
+	{
+		ptr[i] = s1[i];
+		i++;
+	}
+	j = 0;
+	while (s2[j] != '\0')
+	{
+		ptr[i + j] = s2[j];
+		j++;
+	}
+	ptr[i + j] = '\0';
 	return (free(s1), ptr);
 }
-
-// char	**ft_strjoin_and_free(char *s1, char *s2)
-// {
-// 	char	*temp;
-
-// 	temp = ft_strjoin(s1, s2);
-// 	if (!s1)
-// 		free(s1);
-// 	free(temp);
-// }
 
 unsigned int	ft_strlcpy(char *dest, const char *src, unsigned int size)
 {
@@ -103,17 +87,6 @@ unsigned int	ft_strlcpy(char *dest, const char *src, unsigned int size)
 	return (ft_strlen(src));
 }
 
-char	*ft_strchr(const char *str, int c)
-{
-	while ((char)c != *str)
-	{
-		if (!*str)
-			return (0);
-		str++;
-	}
-	return ((char *)str);
-}
-
 char	*ft_strdup(char *src)
 {
 	char	*place;
@@ -129,6 +102,5 @@ char	*ft_strdup(char *src)
 		i++;
 	}
 	place[i] = '\0';
-//	free((char *)src);
 	return (place);
 }

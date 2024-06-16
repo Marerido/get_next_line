@@ -12,6 +12,17 @@
 
 #include "get_next_line.h"
 
+char	*ft_strchr(const char *str, int c)
+{
+	while ((char)c != *str)
+	{
+		if (!*str)
+			return (0);
+		str++;
+	}
+	return ((char *)str);
+}
+
 static char	*read_line(int fd, char *line)
 {
 	char	*buffer;
@@ -97,7 +108,7 @@ int main(void)
 	fd = open("test.txt", O_RDONLY);
 	if (fd == -1)
 	{
-		perror("Error opening file");
+		perror("Error");
 		return (1);
 	}
 
